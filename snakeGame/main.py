@@ -1,6 +1,5 @@
 from tkinter import *
 import random
-import keyboard
 
 GAME_WIDTH = 1000
 GAME_HEIGHT = 700
@@ -125,18 +124,35 @@ def check_collisions(snake):
     return False
 
 def game_over():
-    
+
+    global game_ended
+
     canvas.delete(ALL)
     canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, font=('consolas',70), text="GAME OVER", fill="red", tag="gameover")
     canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2 - 100, font=('consolas',30), text="Press Enter to restart", fill="white", tag="restart")
+    game_ended = False
 
+def start_new_game(event):
+
+    global snake, food, direction, score, game_ended
+    if not game_ended:
+        game_ended = True
+        canvas.delete("gameover", "restart")
+        snake = Snake()
+        food = Food()
+        direction = 'down'
+        score = 0
+        label.config(text="Score:{}".format(score))
+        next_turn(snake, food)
 
 window = Tk()
 window.title("Snake game")
 window.resizable(False, False) # the game is not resizable
 
 score = 0
-direction= 'down'
+direction = 'down'
+
+game_ended = False
 
 label = Label(window, text="Score:{}".format(score), font=('consoles', 40)) # making the score
 label.pack()
@@ -161,6 +177,7 @@ window.bind('<Left>', lambda event: change_direction('left'))
 window.bind('<Right>', lambda event: change_direction('right'))
 window.bind('<Up>', lambda event: change_direction('up'))
 window.bind('<Down>', lambda event: change_direction('down'))
+window.bind('<Return>', start_new_game)
 
 snake = Snake()
 food = Food()
