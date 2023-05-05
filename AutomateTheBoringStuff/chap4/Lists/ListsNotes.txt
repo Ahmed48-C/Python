@@ -1,0 +1,286 @@
+Lists can also contain other list values. 
+The values in these lists of lists can be accessed using multiple indexes, like so:
+
+>>> spam = [['cat', 'bat'], [10, 20, 30, 40, 50]]
+>>> spam[0]
+['cat', 'bat']
+>>> spam[0][1]
+'bat'
+>>> spam[1][4]
+50
+
+The first index dictates which list value to use, 
+and the second indicates the value within the list value. 
+For example, spam[0][1] prints 'bat', the second value in the first list. 
+If you only use one index, the program will print the full list value at that index.
+
+
+
+Negative Indexes
+While indexes start at 0 and go up, you can also use negative integers for the index. The integer value -1 refers to the last index in a list, 
+the value -2 refers to the second-to-last index in a list, and so on.
+
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam[-1]
+'elephant'
+>>> spam[-3]
+'bat'
+>>> 'The ' + spam[-1] + ' is afraid of the ' + spam[-3] + '.'
+'The elephant is afraid of the bat.'
+
+
+
+Getting a List from Another List with Slices
+Just as an index can get a single value from a list, a slice can get several values from a list, 
+in the form of a new list. A slice is typed between square brackets, like an index, but it has two integers separated by a colon. 
+
+Notice the difference between indexes and slices.
+
+    spam[2] is a list with an index (one integer).
+    spam[1:4] is a list with a slice (two integers).
+
+In a slice, the first integer is the index where the slice starts. The second integer is the index where the slice ends. A slice goes up to, 
+but will not include, the value at the second index. A slice evaluates to a new list value. Enter the following into the interactive shell:
+
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam[0:4]
+['cat', 'bat', 'rat', 'elephant']
+>>> spam[1:3]
+['bat', 'rat']
+>>> spam[0:-1]
+['cat', 'bat', 'rat']
+
+As a shortcut, you can leave out one or both of the indexes on either side of the colon in the slice.
+Leaving out the first index is the same as using 0, or the beginning of the list. Leaving out the second index is the same as using the length of the list, 
+which will slice to the end of the list. Enter the following into the interactive shell:
+
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam[:2]
+['cat', 'bat']
+>>> spam[1:]
+['bat', 'rat', 'elephant']
+>>> spam[:]
+['cat', 'bat', 'rat', 'elephant']
+
+
+
+List Concatenation and List Replication
+Lists can be concatenated and replicated just like strings. 
+The + operator combines two lists to create a new list value 
+and the * operator can be used with a list and an integer value to replicate the list. 
+Enter the following into the interactive shell:
+
+>>> [1, 2, 3] + ['A', 'B', 'C']
+[1, 2, 3, 'A', 'B', 'C']
+>>> ['X', 'Y', 'Z'] * 3
+['X', 'Y', 'Z', 'X', 'Y', 'Z', 'X', 'Y', 'Z']
+>>> spam = [1, 2, 3]
+>>> spam = spam + ['A', 'B', 'C']
+>>> spam
+[1, 2, 3, 'A', 'B', 'C']
+
+
+
+Using the enumerate() Function with Lists
+Instead of using the range(len(someList)) technique with a for loop to 
+obtain the integer index of the items in the list, 
+you can call the enumerate() function instead. On each iteration of the loop, 
+enumerate() will return two values: the index of the item in the list, 
+and the item in the list itself. For example, 
+this code is equivalent to the code in the “Using for Loops with Lists” on page 84:
+
+>>> supplies = ['pens', 'staplers', 'flamethrowers', 'binders']
+>>> for index, item in enumerate(supplies):
+...     print('Index ' + str(index) + ' in supplies is: ' + item)
+
+Index 0 in supplies is: pens
+Index 1 in supplies is: staplers
+Index 2 in supplies is: flamethrowers
+Index 3 in supplies is: binders
+
+The enumerate() function is useful if you need both the item and the item’s index in the loop’s block.
+
+
+
+Using the random.choice() and random.shuffle() Functions with Lists
+The random module has a couple functions that accept lists for arguments. 
+The random.choice() function will return a randomly selected item from the list. 
+Enter the following into the interactive shell:
+
+>>> import random
+>>> pets = ['Dog', 'Cat', 'Moose']
+>>> random.choice(pets)
+'Dog'
+>>> random.choice(pets)
+'Cat'
+>>> random.choice(pets)
+'Cat'
+
+You can consider random.choice(someList) to be a shorter form of someList[random.randint(0, len(someList) – 1)].
+
+The random.shuffle() function will reorder the items in a list. This function modifies the list in place, 
+rather than returning a new list. Enter the following into the interactive shell:
+
+>>> import random
+>>> people = ['Alice', 'Bob', 'Carol', 'David']
+>>> random.shuffle(people)
+>>> people
+['Carol', 'David', 'Alice', 'Bob']
+>>> random.shuffle(people)
+>>> people
+['Alice', 'David', 'Bob', 'Carol']
+
+
+
+Adding Values to Lists with the append() and insert() Methods
+To add new values to a list, use the append() and insert() methods. 
+Enter the following into the interactive shell to call the append() method on a list value stored in the variable spam:
+
+>>> spam = ['cat', 'dog', 'bat']
+>>> spam.append('moose')
+>>> spam
+['cat', 'dog', 'bat', 'moose']
+
+The previous append() method call adds the argument to the end of the list. The insert() method can insert a value at any index in the list.
+ The first argument to insert() is the index for the new value, and the second argument is the new value to be inserted. 
+ Enter the following into the interactive shell:
+
+>>> spam = ['cat', 'dog', 'bat']
+>>> spam.insert(1, 'chicken')
+>>> spam
+['cat', 'chicken', 'dog', 'bat']
+
+
+
+Removing Values from Lists with the remove() Method
+The remove() method is passed the value to be removed from the list it is called on. Enter the following into the interactive shell:
+
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam.remove('bat')
+>>> spam
+['cat', 'rat', 'elephant']
+
+Attempting to delete a value that does not exist in the list will result in a ValueError error. 
+For example, enter the following into the interactive shell and notice the error that is displayed:
+
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam.remove('chicken')
+Traceback (most recent call last):
+  File "<pyshell#11>", line 1, in <module>
+    spam.remove('chicken')
+ValueError: list.remove(x): x not in list
+
+If the value appears multiple times in the list, only the first instance of the value will be removed. 
+Enter the following into the interactive shell:
+
+>>> spam = ['cat', 'bat', 'rat', 'cat', 'hat', 'cat']
+>>> spam.remove('cat')
+>>> spam
+['bat', 'rat', 'cat', 'hat', 'cat']
+
+The del statement is good to use when you know the index of the value you want to remove from the list. 
+The remove() method is useful when you know the value you want to remove from the list.
+
+
+
+
+Sorting the Values in a List with the sort() Method
+Lists of number values or lists of strings can be sorted with the sort() method. 
+For example, enter the following into the interactive shell:
+
+>>> spam = [2, 5, 3.14, 1, -7]
+>>> spam.sort()
+>>> spam
+[-7, 1, 2, 3.14, 5]
+>>> spam = ['ants', 'cats', 'dogs', 'badgers', 'elephants']
+>>> spam.sort()
+>>> spam
+['ants', 'badgers', 'cats', 'dogs', 'elephants']
+
+
+You can also pass True for the reverse keyword argument to have sort() sort the values in reverse order.
+ Enter the following into the interactive shell:
+
+>>> spam.sort(reverse=True)
+>>> spam
+['elephants', 'dogs', 'cats', 'badgers', 'ants']
+
+
+There are three things you should note about the sort() method. First, 
+the sort() method sorts the list in place; 
+don’t try to capture the return value by writing code like spam = spam.sort().
+
+
+Second, you cannot sort lists that have both number values and string values in them, 
+since Python doesn’t know how to compare these values. 
+Enter the following into the interactive shell and notice the TypeError error:
+
+>>> spam = [1, 3, 2, 4, 'Alice', 'Bob']
+>>> spam.sort()
+Traceback (most recent call last):
+  File "<pyshell#70>", line 1, in <module>
+    spam.sort()
+TypeError: '<' not supported between instances of 'str' and 'int'
+
+
+Third, sort() uses “ASCIIbetical order” rather than actual alphabetical order for sorting strings. 
+This means uppercase letters come before lowercase letters. Therefore, 
+the lowercase a is sorted so that it comes after the uppercase Z. 
+For an example, enter the following into the interactive shell:
+
+>>> spam = ['Alice', 'ants', 'Bob', 'badgers', 'Carol', 'cats']
+>>> spam.sort()
+>>> spam
+['Alice', 'Bob', 'Carol', 'ants', 'badgers', 'cats']
+
+
+If you need to sort the values in regular alphabetical order, 
+pass str.lower for the key keyword argument in the sort() method call.
+
+>>> spam = ['a', 'z', 'A', 'Z']
+>>> spam.sort(key=str.lower)
+>>> spam
+['a', 'A', 'z', 'Z']
+
+This causes the sort() function to treat all the items in the list 
+as if they were lowercase without actually changing the values in the list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
