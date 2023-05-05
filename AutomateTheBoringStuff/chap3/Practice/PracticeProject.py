@@ -21,7 +21,18 @@ def collatz(number):
         if number % 2 == 0:
             return number // 2
         elif number % 2 == 1:
-            return 3 * number + 1
+            return 3 * number + 1  
+        
+# def collatzCall(num):
+#     while True:
+#         if userNumber != 1: 
+#                     print(collatz(num))
+#                     time.sleep(0.1)
+#                     userNumber = collatz(num)
+#                     continue
+#         elif userNumber == 1:
+#             print("Thanks for playing!")
+#             break                
 
 def numToOne():
     global userNumber
@@ -34,15 +45,29 @@ def numToOne():
         print("\nOnly digits are allowed!\n")
         userNumber = int(input("Enter a Number to turn it into 1: "))
     print(userNumber)
-    while True:
-        if userNumber != 1: 
-            print(collatz(userNumber))
-            time.sleep(0.1)
-            userNumber = collatz(userNumber)
-            continue
-        elif userNumber == 1:
-            print("Thanks for playing!")
-            break
+    if userNumber != 0:
+        while True:
+            if userNumber != 1: 
+                print(collatz(userNumber))
+                time.sleep(0.1)
+                userNumber = collatz(userNumber)
+                continue
+            elif userNumber == 1:
+                print("Thanks for playing!")
+                break
+    else:
+        print("0 is not allowed")
+        userNumber = int(input("Enter a Number to turn it into 1: "))
+        print("Collatz will turn {} into 1...".format(userNumber))
+        while True:
+            if userNumber != 1: 
+                print(collatz(userNumber))
+                time.sleep(0.1)
+                userNumber = collatz(userNumber)
+                continue
+            elif userNumber == 1:
+                print("Thanks for playing!")
+                break
               
 numToOne()
 
