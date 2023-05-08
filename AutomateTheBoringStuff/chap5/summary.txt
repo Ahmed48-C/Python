@@ -1,0 +1,9 @@
+Summary
+
+You learned all about dictionaries in this chapter. Lists and dictionaries are values that can contain multiple values, 
+including other lists and dictionaries. Dictionaries are useful because you can map one item (the key) to another (the value), 
+as opposed to lists, which simply contain a series of values in order. 
+Values inside a dictionary are accessed using square brackets just as with lists. Instead of an integer index, 
+dictionaries can have keys of a variety of data types: integers, floats, strings, or tuples. 
+By organizing a program’s values into data structures, you can create representations of real-world objects. 
+You saw an example of this with a tic-tac-toe board.
