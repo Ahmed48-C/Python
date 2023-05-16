@@ -1,0 +1,154 @@
+Matching Multiple Groups with the Pipe
+The | character is called a pipe. You can use it anywhere you want to match one of many expressions. 
+For example, the regular expression r'Batman|Tina Fey' will match either 'Batman' or 'Tina Fey'.
+
+When both Batman and Tina Fey occur in the searched string, the first occurrence of matching text will be returned as the Match object. 
+Enter the following into the interactive shell:
+
+>>> heroRegex = re.compile (r'Batman|Tina Fey')
+>>> mo1 = heroRegex.search('Batman and Tina Fey')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = heroRegex.search('Tina Fey and Batman')
+>>> mo2.group()
+'Tina Fey'
+
+NOTE
+
+You can find all matching occurrences with the findall() method that’s discussed in “The findall() Method” on page 171.
+
+You can also use the pipe to match one of several patterns as part of your regex. For example, 
+say you wanted to match any of the strings 'Batman', 'Batmobile', 'Batcopter', and 'Batbat'. Since all these strings start with Bat, 
+it would be nice if you could specify that prefix only once. This can be done with parentheses. 
+Enter the following into the interactive shell:
+
+>>> batRegex = re.compile(r'Bat(man|mobile|copter|bat)')
+>>> mo = batRegex.search('Batmobile lost a wheel')
+>>> mo.group()
+'Batmobile'
+>>> mo.group(1)
+'mobile'
+
+The method call mo.group() returns the full matched text 'Batmobile', while mo.group(1) returns just the part of the matched text inside the first parentheses group, 
+'mobile'. By using the pipe character and grouping parentheses, you can specify several alternative patterns you would like your regex to match.
+
+If you need to match an actual pipe character, escape it with a backslash, like \|.
+
+
+
+Optional Matching with the Question Mark
+Sometimes there is a pattern that you want to match only optionally. That is, the regex should find a match regardless of whether that bit of text is there. 
+The ? character flags the group that precedes it as an optional part of the pattern. For example, 
+enter the following into the interactive shell:
+
+>>> batRegex = re.compile(r'Bat(wo)?man')
+>>> mo1 = batRegex.search('The Adventures of Batman')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwoman')
+>>> mo2.group()
+'Batwoman'
+
+The (wo)? part of the regular expression means that the pattern wo is an optional group. 
+The regex will match text that has zero instances or one instance of wo in it. 
+This is why the regex matches both 'Batwoman' and 'Batman'.
+
+Using the earlier phone number example, you can make the regex look for phone numbers that do or do not have an area code. 
+Enter the following into the interactive shell:
+
+>>> phoneRegex = re.compile(r'(\d\d\d-)?\d\d\d-\d\d\d\d')
+>>> mo1 = phoneRegex.search('My number is 415-555-4242')
+>>> mo1.group()
+'415-555-4242'
+
+>>> mo2 = phoneRegex.search('My number is 555-4242')
+>>> mo2.group()
+'555-4242'
+
+You can think of the ? as saying, “Match zero or one of the group preceding this question mark.”
+
+If you need to match an actual question mark character, escape it with \?.
+
+
+
+Matching Zero or More with the Star
+The * (called the star or asterisk) means “match zero or more”—the group that precedes the star can occur any number of times in the text. 
+It can be completely absent or repeated over and over again. Let’s look at the Batman example again.
+
+>>> batRegex = re.compile(r'Bat(wo)*man')
+>>> mo1 = batRegex.search('The Adventures of Batman')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwoman')
+>>> mo2.group()
+'Batwoman'
+
+>>> mo3 = batRegex.search('The Adventures of Batwowowowoman')
+>>> mo3.group()
+'Batwowowowoman'
+
+For 'Batman', the (wo)* part of the regex matches zero instances of wo in the string; for 'Batwoman',
+ the (wo)* matches one instance of wo; and for 'Batwowowowoman', (wo)* matches four instances of wo.
+
+If you need to match an actual star character, prefix the star in the regular expression with a backslash, \*.
+
+
+
+Matching One or More with the Plus
+While * means “match zero or more,” the + (or plus) means “match one or more.” Unlike the star, 
+which does not require its group to appear in the matched string, the group preceding a plus must appear at least once. It is not optional. 
+Enter the following into the interactive shell, and compare it with the star regexes in the previous section:
+
+>>> batRegex = re.compile(r'Bat(wo)+man')
+>>> mo1 = batRegex.search('The Adventures of Batwoman')
+>>> mo1.group()
+'Batwoman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwowowowoman')
+>>> mo2.group()
+'Batwowowowoman'
+
+>>> mo3 = batRegex.search('The Adventures of Batman')
+>>> mo3 == None
+True
+
+The regex Bat(wo)+man will not match the string 'The Adventures of Batman', because at least one wo is required by the plus sign.
+
+If you need to match an actual plus sign character, prefix the plus sign with a backslash to escape it: \+.
+
+
+
+Matching Specific Repetitions with Braces
+If you have a group that you want to repeat a specific number of times, follow the group in your regex with a number in braces. For example, 
+the regex (Ha){3} will match the string 'HaHaHa', but it will not match 'HaHa', since the latter has only two repeats of the (Ha) group.
+
+Instead of one number, you can specify a range by writing a minimum, a comma, and a maximum in between the braces. For example, 
+the regex (Ha){3,5} will match 'HaHaHa', 'HaHaHaHa', and 'HaHaHaHaHa'.
+
+You can also leave out the first or second number in the braces to leave the minimum or maximum unbounded. For example, 
+(Ha){3,} will match three or more instances of the (Ha) group, while (Ha){,5} will match zero to five instances. 
+Braces can help make your regular expressions shorter. These two regular expressions match identical patterns:
+
+(Ha){3}
+(Ha)(Ha)(Ha)
+
+And these two regular expressions also match identical patterns:
+
+(Ha){3,5}
+((Ha)(Ha)(Ha))|((Ha)(Ha)(Ha)(Ha))|((Ha)(Ha)(Ha)(Ha)(Ha))
+
+Enter the following into the interactive shell:
+
+>>> haRegex = re.compile(r'(Ha){3}')
+>>> mo1 = haRegex.search('HaHaHa')
+>>> mo1.group()
+'HaHaHa'
+
+>>> mo2 = haRegex.search('Ha')
+>>> mo2 == None
+True
+
+Here, (Ha){3} matches 'HaHaHa' but not 'Ha'. Since it doesn’t match 'Ha', search() returns None.

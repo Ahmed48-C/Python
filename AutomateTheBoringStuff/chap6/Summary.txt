@@ -1,0 +1,25 @@
+Summary
+Text is a common form of data, and Python comes with many helpful string methods to process the text stored in string values. 
+You will make use of indexing, slicing, and string methods in almost every Python program you write.
+
+The programs you are writing now don’t seem too sophisticated—they don’t have graphical user interfaces with images and colorful text. 
+So far, you’re displaying text with print() and letting the user enter text with input(). However, 
+the user can quickly enter large amounts of text through the clipboard. 
+This ability provides a useful avenue for writing programs that manipulate massive amounts of text. 
+These text-based programs might not have flashy windows or graphics, but they can get a lot of useful work done quickly.
+
+Another way to manipulate large amounts of text is reading and writing files directly off the hard drive. 
+You’ll learn how to do this with Python in Chapter 9.
+
+That just about covers all the basic concepts of Python programming! You’ll continue to learn new concepts throughout the rest of this book, 
+but you now know enough to start writing some useful programs that can automate tasks. 
+If you’d like to see a collection of short, simple Python programs built from the basic concepts you’ve learned so far, 
+check out https://github.com/asweigart/pythonstdiogames/. Try copying the source code for each program by hand, 
+and then make modifications to see how they affect the behavior of the program. Once you have an understanding of how the program works,
+ try re-creating the program yourself from scratch. You don’t need to re-create the source code exactly; 
+ just focus on what the program does rather than how it does it.
+
+You might not think you have enough Python knowledge to do things such as download web pages, update spreadsheets, or send text messages, 
+but that’s where Python modules come in! These modules, written by other programmers, 
+provide functions that make it easy for you to do all these things. So let’s learn how to write real programs to do useful automated tasks.
+

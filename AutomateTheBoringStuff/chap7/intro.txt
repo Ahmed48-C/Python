@@ -1,0 +1,22 @@
+You may be familiar with searching for text by pressing CTRL-F and entering the words you’re looking for. Regular expressions go one step further: 
+they allow you to specify a pattern of text to search for. You may not know a business’s exact phone number, but if you live in the United States or Canada,
+ you know it will be three digits, followed by a hyphen, and then four more digits (and optionally, a three-digit area code at the start). 
+ This is how you, as a human, know a phone number when you see it: 
+ 415-555-1234 is a phone number, but 4,155,551,234 is not.
+
+We also recognize all sorts of other text patterns every day: email addresses have @ symbols in the middle, 
+US social security numbers have nine digits and two hyphens, website URLs often have periods and forward slashes, 
+news headlines use title case, social media hashtags begin with # and contain no spaces, and more.
+
+Regular expressions are helpful, but few non-programmers know about them even though most modern text editors and word processors, 
+such as Microsoft Word or OpenOffice, have find and find-and-replace features that can search based on regular expressions. 
+Regular expressions are huge time-savers, not just for software users but also for programmers. In fact, 
+tech writer Cory Doctorow argues that we should be teaching regular expressions even before programming:
+
+Knowing [regular expressions] can mean the difference between solving a problem in 3 steps and solving it in 3,000 steps. When you’re a nerd,
+you forget that the problems you solve with a couple keystrokes can take other people days of tedious, error-prone work to slog through.1
+
+In this chapter, you’ll start by writing a program to find text patterns without using regular expressions 
+and then see how to use regular expressions to make the code much less bloated. 
+I’ll show you basic matching with regular expressions and then move on to some more powerful features, such as string substitution and creating your own character classes. 
+Finally, at the end of the chapter, you’ll write a program that can automatically extract phone numbers and email addresses from a block of text.

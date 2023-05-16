@@ -7,14 +7,16 @@ board1 = {
 
 MAX_PAWNS = 8
 MAX_PIECES = 16
+VALID_MOVES = [chr(i) + str(j) for i in range(97, 105) for j in range(1, 9)]
+print(VALID_MOVES)
 
 def isValidChessBoard(board):
-    moves = [chr(i) + str(j) for i in range(97, 105) for j in range(1, 9)]
+    
     black = {'pawns': 0, 'pieces': 0}
     white = {'pawns': 0, 'pieces': 0}
     
     boardkeys = list(board.keys())
-    check = all(item in moves for item in boardkeys)
+    check = all(item in VALID_MOVES for item in boardkeys)
     print(check)
     
     for k in board:
@@ -27,7 +29,10 @@ def isValidChessBoard(board):
             if board[k] == 'bpawn':
                 black['pawns'] += 1
                 
-    if check and 'wking' and 'bking' in board.values() and black['pawns'] <= MAX_PAWNS and white['pawns'] <= MAX_PAWNS and black['pieces'] <= MAX_PIECES and white['pieces'] <= MAX_PIECES:
+    kings =  list(board.values()).count('bking') == 1 and list(board.values()).count('wking') == 1
+    print(kings)
+                
+    if check and kings and black['pawns'] <= MAX_PAWNS and white['pawns'] <= MAX_PAWNS and black['pieces'] <= MAX_PIECES and white['pieces'] <= MAX_PIECES:
         print("this board is valid")
         return True
     else:

@@ -1,0 +1,215 @@
+Character Classes
+In the earlier phone number regex example, you learned that \d could stand for any numeric digit. That is, \d is shorthand for the regular expression (0|1|2|3|4|5|6|7|8|9). There are many such shorthand character classes.
+
+Shorthand character class
+
+\d Any numeric digit from 0 to 9.
+
+\D Any character that is not a numeric digit from 0 to 9.
+
+\w Any letter, numeric digit, or the underscore character. (Think of this as matching “word” characters.)
+
+\W Any character that is not a letter, numeric digit, or the underscore character.
+
+\s Any space, tab, or newline character. (Think of this as matching “space” characters.)
+
+\S Any character that is not a space, tab, or newline.
+
+Character classes are nice for shortening regular expressions. 
+The character class [0-5] will match only the numbers 0 to 5; this is much shorter than typing (0|1|2|3|4|5). 
+Note that while \d matches digits and \w matches digits, letters, and the underscore, 
+there is no shorthand character class that matches only letters. (Though you can use the [a-zA-Z] character class, as explained next.)
+
+For example, enter the following into the interactive shell:
+
+>>> xmasRegex = re.compile(r'\d+\s\w+')
+>>> xmasRegex.findall('12 drummers, 11 pipers, 10 lords, 9 ladies, 8 maids, 7
+swans, 6 geese, 5 rings, 4 birds, 3 hens, 2 doves, 1 partridge')
+['12 drummers', '11 pipers', '10 lords', '9 ladies', '8 maids', '7 swans', '6
+geese', '5 rings', '4 birds', '3 hens', '2 doves', '1 partridge']
+
+The regular expression \d+\s\w+ will match text that has one or more numeric digits (\d+), followed by a whitespace character (\s), 
+followed by one or more letter/digit/underscore characters (\w+). 
+The findall() method returns all matching strings of the regex pattern in a list.
+
+
+
+Making Your Own Character Classes
+There are times when you want to match a set of characters but the shorthand character classes (\d, \w, \s, and so on) are too broad. 
+You can define your own character class using square brackets. For example, 
+the character class [aeiouAEIOU] will match any vowel, both lowercase and uppercase. 
+Enter the following into the interactive shell:
+
+>>> vowelRegex = re.compile(r'[aeiouAEIOU]')
+>>> vowelRegex.findall('RoboCop eats baby food. BABY FOOD.')
+['o', 'o', 'o', 'e', 'a', 'a', 'o', 'o', 'A', 'O', 'O']
+
+You can also include ranges of letters or numbers by using a hyphen. For example, 
+the character class [a-zA-Z0-9] will match all lowercase letters, uppercase letters, and numbers.
+
+Note that inside the square brackets, the normal regular expression symbols are not interpreted as such. 
+This means you do not need to escape the ., *, ?, or () characters with a preceding backslash. For example, 
+the character class [0-5.] will match digits 0 to 5 and a period. You do not need to write it as [0-5\.].
+
+By placing a caret character (^) just after the character class’s opening bracket, you can make a negative character class. 
+A negative character class will match all the characters that are not in the character class. For example, 
+enter the following into the interactive shell:
+
+>>> consonantRegex = re.compile(r'[^aeiouAEIOU]')
+>>> consonantRegex.findall('RoboCop eats baby food. BABY FOOD.')
+['R', 'b', 'C', 'p', ' ', 't', 's', ' ', 'b', 'b', 'y', ' ', 'f', 'd', '.', '
+', 'B', 'B', 'Y', ' ', 'F', 'D', '.']
+
+Now, instead of matching every vowel, we’re matching every character that isn’t a vowel.
+
+
+
+The Caret and Dollar Sign Characters
+You can also use the caret symbol (^) at the start of a regex to indicate that a match must occur at the beginning of the searched text. 
+Likewise, you can put a dollar sign ($) at the end of the regex to indicate the string must end with this regex pattern. 
+And you can use the ^ and $ together to indicate that the entire string must match the regex—that is, 
+it’s not enough for a match to be made on some subset of the string.
+
+For example, the r'^Hello' regular expression string matches strings that begin with 'Hello'. 
+Enter the following into the interactive shell:
+
+>>> beginsWithHello = re.compile(r'^Hello')
+>>> beginsWithHello.search('Hello, world!')
+<re.Match object; span=(0, 5), match='Hello'>
+>>> beginsWithHello.search('He said hello.') == None
+True
+
+The r'\d$' regular expression string matches strings that end with a numeric character from 0 to 9. 
+Enter the following into the interactive shell:
+
+>>> endsWithNumber = re.compile(r'\d$')
+>>> endsWithNumber.search('Your number is 42')
+<re.Match object; span=(16, 17), match='2'>
+>>> endsWithNumber.search('Your number is forty two.') == None
+True
+
+The r'^\d+$' regular expression string matches strings that both begin and end with one or more numeric characters. 
+Enter the following into the interactive shell:
+
+>>> wholeStringIsNum = re.compile(r'^\d+$')
+>>> wholeStringIsNum.search('1234567890')
+<re.Match object; span=(0, 10), match='1234567890'>
+>>> wholeStringIsNum.search('12345xyz67890') == None
+True
+>>> wholeStringIsNum.search('12  34567890') == None
+True
+
+The last two search() calls in the previous interactive shell example demonstrate how the entire string must match the regex if ^ and $ are used.
+
+I always confuse the meanings of these two symbols, so I use the mnemonic “Carrots cost dollars” 
+to remind myself that the caret comes first and the dollar sign comes last.
+
+
+
+The Wildcard Character
+The . (or dot) character in a regular expression is called a wildcard and will match any character except for a newline. For example, 
+enter the following into the interactive shell:
+
+>>> atRegex = re.compile(r'.at')
+>>> atRegex.findall('The cat in the hat sat on the flat mat.')
+['cat', 'hat', 'sat', 'lat', 'mat']
+
+Remember that the dot character will match just one character, 
+which is why the match for the text flat in the previous example matched only lat. 
+To match an actual dot, escape the dot with a backslash: \..
+
+
+
+Matching Everything with Dot-Star
+Sometimes you will want to match everything and anything. For example, say you want to match the string 'First Name:', 
+followed by any and all text, followed by 'Last Name:', and then followed by anything again. 
+You can use the dot-star (.*) to stand in for that “anything.” Remember that the dot character means “any single character except the newline,” 
+and the star character means “zero or more of the preceding character.”
+
+Enter the following into the interactive shell:
+
+>>> nameRegex = re.compile(r'First Name: (.*) Last Name: (.*)')
+>>> mo = nameRegex.search('First Name: Al Last Name: Sweigart')
+>>> mo.group(1)
+'Al'
+>>> mo.group(2)
+'Sweigart'
+
+The dot-star uses greedy mode: It will always try to match as much text as possible. 
+To match any and all text in a non-greedy fashion, use the dot, star, and question mark (.*?). Like with braces, 
+the question mark tells Python to match in a non-greedy way.
+
+Enter the following into the interactive shell to see the difference between the greedy and non-greedy versions:
+
+>>> nongreedyRegex = re.compile(r'<.*?>')
+>>> mo = nongreedyRegex.search('<To serve man> for dinner.>')
+>>> mo.group()
+'<To serve man>'
+
+>>> greedyRegex = re.compile(r'<.*>')
+>>> mo = greedyRegex.search('<To serve man> for dinner.>')
+>>> mo.group()
+'<To serve man> for dinner.>'
+
+Both regexes roughly translate to “Match an opening angle bracket, followed by anything, 
+followed by a closing angle bracket.” But the string '<To serve man> for dinner.>' has two possible matches for the closing angle bracket. 
+In the non-greedy version of the regex, Python matches the shortest possible string: '<To serve man>'. 
+In the greedy version, Python matches the longest possible string: '<To serve man> for dinner.>'.
+
+
+
+Matching Newlines with the Dot Character
+The dot-star will match everything except a newline. By passing re.DOTALL as the second argument to re.compile(), 
+you can make the dot character match all characters, including the newline character.
+
+Enter the following into the interactive shell:
+
+>>> noNewlineRegex = re.compile('.*')
+>>> noNewlineRegex.search('Serve the public trust.\nProtect the innocent.
+\nUphold the law.').group()
+'Serve the public trust.'
+
+
+>>> newlineRegex = re.compile('.*', re.DOTALL)
+>>> newlineRegex.search('Serve the public trust.\nProtect the innocent.
+\nUphold the law.').group()
+'Serve the public trust.\nProtect the innocent.\nUphold the law.'
+
+The regex noNewlineRegex, which did not have re.DOTALL passed to the re.compile() call that created it, 
+will match everything only up to the first newline character, whereas newlineRegex, which did have re.DOTALL passed to re.compile(), 
+matches everything. This is why the newlineRegex.search() call matches the full string, including its newline characters.
+
+
+
+Review of Regex Symbols
+This chapter covered a lot of notation, so here’s a quick review of what you learned about basic regular expression syntax:
+
+The ? matches zero or one of the preceding group.
+
+The * matches zero or more of the preceding group.
+
+The + matches one or more of the preceding group.
+
+The {n} matches exactly n of the preceding group
+.
+The {n,} matches n or more of the preceding group.
+
+The {,m} matches 0 to m of the preceding group.
+
+The {n,m} matches at least n and at most m of the preceding group.
+
+{n,m}? or *? or +? performs a non-greedy match of the preceding group.
+
+^spam means the string must begin with spam.
+
+spam$ means the string must end with spam.
+
+The . matches any character, except newline characters.
+
+\d, \w, and \s match a digit, word, or space character, respectively.
+
+\D, \W, and \S match anything except a digit, word, or space character, respectively.
+
+[abc] matches any character between the brackets (such as a, b, or c).
+
+[^abc] matches any character that isn’t between the brackets.

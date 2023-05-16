@@ -1,0 +1,233 @@
+Grouping with Parentheses
+Say you want to separate the area code from the rest of the phone number. Adding parentheses will create groups in the regex: 
+(\d\d\d)-(\d\d\d-\d\d\d\d). Then you can use the group() match object method to grab the matching text from just one group.
+
+The first set of parentheses in a regex string will be group 1. The second set will be group 2. 
+By passing the integer 1 or 2 to the group() match object method, you can grab different parts of the matched text. 
+Passing 0 or nothing to the group() method will return the entire matched text. 
+Enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'(\d\d\d)-(\d\d\d-\d\d\d\d)')
+>>> mo = phoneNumRegex.search('My number is 415-555-4242.')
+>>> mo.group(1)
+'415'
+>>> mo.group(2)
+'555-4242'
+>>> mo.group(0)
+'415-555-4242'
+>>> mo.group()
+'415-555-4242'
+
+If you would like to retrieve all the groups at once, use the groups() method—note the plural form for the name.
+
+>>> mo.groups()
+('415', '555-4242')
+>>> areaCode, mainNumber = mo.groups()
+>>> print(areaCode)
+415
+>>> print(mainNumber)
+555-4242
+
+Since mo.groups() returns a tuple of multiple values, you can use the multiple-assignment trick to assign each value to a separate variable, 
+as in the previous areaCode, mainNumber = mo.groups() line.
+
+Parentheses have a special meaning in regular expressions, but what do you do if you need to match a parenthesis in your text? For instance, 
+maybe the phone numbers you are trying to match have the area code set in parentheses. In this case, 
+you need to escape the ( and ) characters with a backslash. 
+Enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'(\(\d\d\d\)) (\d\d\d-\d\d\d\d)')
+>>> mo = phoneNumRegex.search('My phone number is (415) 555-4242.')
+>>> mo.group(1)
+'(415)'
+>>> mo.group(2)
+'555-4242'
+
+The \( and \) escape characters in the raw string passed to re.compile() will match actual parenthesis characters. 
+In regular expressions, the following characters have special meanings:
+
+.  ^  $  *  +  ?  {  }  [  ]  \  |  (  )
+
+If you want to detect these characters as part of your text pattern, you need to escape them with a backslash:
+
+\.  \^  \$  \*  \+  \?  \{  \}  \[  \]  \\  \|  \(  \)
+
+Make sure to double-check that you haven’t mistaken escaped parentheses \( and \) for parentheses ( and ) in a regular expression. 
+If you receive an error message about “missing )” or “unbalanced parenthesis,” you may have forgotten to include the closing unescaped parenthesis for a group, 
+like in this example:
+
+>>> re.compile(r'(\(Parentheses\)')
+Traceback (most recent call last):
+    --snip--
+re.error: missing ), unterminated subpattern at position 0
+
+The error message tells you that there is an opening parenthesis at index 0 of the r'(\(Parentheses\)' string that is missing its corresponding closing parenthesis.
+
+
+
+The findall() Method
+In addition to the search() method, Regex objects also have a findall() method. 
+While search() will return a Match object of the first matched text in the searched string, the findall() method will return the strings of every match in the searched string. 
+To see how search() returns a Match object only on the first instance of matching text, 
+enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d')
+>>> mo = phoneNumRegex.search('Cell: 415-555-9999 Work: 212-555-0000')
+>>> mo.group()
+'415-555-9999'
+
+On the other hand, findall() will not return a Match object but a list of strings—as long as there are no groups in the regular expression. 
+Each string in the list is a piece of the searched text that matched the regular expression. 
+Enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d') # has no groups
+>>> phoneNumRegex.findall('Cell: 415-555-9999 Work: 212-555-0000')
+['415-555-9999', '212-555-0000']
+
+If there are groups in the regular expression, then findall() will return a list of tuples. Each tuple represents a found match, 
+and its items are the matched strings for each group in the regex. To see findall() in action, 
+enter the following into the interactive shell (notice that the regular expression being compiled now has groups in parentheses):
+
+>>> phoneNumRegex = re.compile(r'(\d\d\d)-(\d\d\d)-(\d\d\d\d)') # has groups
+>>> phoneNumRegex.findall('Cell: 415-555-9999 Work: 212-555-0000')
+[('415', '555', '9999'), ('212', '555', '0000')]
+
+To summarize what the findall() method returns, remember the following:
+
+When called on a regex with no groups, such as \d\d\d-\d\d\d-\d\d\d\d, the method findall() returns a list of string matches, such as ['415-555-9999', '212-555-0000'].
+When called on a regex that has groups, such as (\d\d\d)-(\d\d\d)-(\d\d\d\d), 
+the method findall() returns a list of tuples of strings (one string for each group), such as [('415', '555', '9999'), ('212', '555', '0000')].The findall() Method
+In addition to the search() method, Regex objects also have a findall() method. While search() will return a Match object of the first matched text in the searched string,
+the findall() method will return the strings of every match in the searched string. 
+To see how search() returns a Match object only on the first instance of matching text, 
+enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d')
+>>> mo = phoneNumRegex.search('Cell: 415-555-9999 Work: 212-555-0000')
+>>> mo.group()
+'415-555-9999'
+
+On the other hand, findall() will not return a Match object but a list of strings—as long as there are no groups in the regular expression. 
+Each string in the list is a piece of the searched text that matched the regular expression.
+Enter the following into the interactive shell:
+
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d') # has no groups
+>>> phoneNumRegex.findall('Cell: 415-555-9999 Work: 212-555-0000')
+['415-555-9999', '212-555-0000']
+
+If there are groups in the regular expression, then findall() will return a list of tuples. Each tuple represents a found match, 
+and its items are the matched strings for each group in the regex. To see findall() in action, 
+enter the following into the interactive shell (notice that the regular expression being compiled now has groups in parentheses):
+
+>>> phoneNumRegex = re.compile(r'(\d\d\d)-(\d\d\d)-(\d\d\d\d)') # has groups
+>>> phoneNumRegex.findall('Cell: 415-555-9999 Work: 212-555-0000')
+[('415', '555', '9999'), ('212', '555', '0000')]
+
+To summarize what the findall() method returns, remember the following:
+
+When called on a regex with no groups, such as \d\d\d-\d\d\d-\d\d\d\d, the method findall() returns a list of string matches, such as ['415-555-9999', '212-555-0000'].
+
+When called on a regex that has groups, such as (\d\d\d)-(\d\d\d)-(\d\d\d\d), the method findall() returns a list of tuples of strings (one string for each group), 
+such as [('415', '555', '9999'), ('212', '555', '0000')].
+
+
+
+Case-Insensitive Matching
+Normally, regular expressions match text with the exact casing you specify. For example, 
+the following regexes match completely different strings:
+
+>>> regex1 = re.compile('RoboCop')
+>>> regex2 = re.compile('ROBOCOP')
+>>> regex3 = re.compile('robOcop')
+>>> regex4 = re.compile('RobocOp')
+
+But sometimes you care only about matching the letters without worrying whether they’re uppercase or lowercase. 
+To make your regex case-insensitive, you can pass re.IGNORECASE or re.I as a second argument to re.compile(). 
+Enter the following into the interactive shell:
+
+>>> robocop = re.compile(r'robocop', re.I)
+>>> robocop.search('RoboCop is part man, part machine, all cop.').group()
+'RoboCop'
+
+>>> robocop.search('ROBOCOP protects the innocent.').group()
+'ROBOCOP'
+
+>>> robocop.search('Al, why does your programming book talk about robocop so much?').group()
+'robocop'
+
+
+
+Substituting Strings with the sub() Method
+Regular expressions can not only find text patterns but can also substitute new text in place of those patterns. 
+The sub() method for Regex objects is passed two arguments. The first argument is a string to replace any matches. 
+The second is the string for the regular expression. The sub() method returns a string with the substitutions applied.
+
+For example, enter the following into the interactive shell:
+
+>>> namesRegex = re.compile(r'Agent \w+')
+>>> namesRegex.sub('CENSORED', 'Agent Alice gave the secret documents to Agent Bob.')
+'CENSORED gave the secret documents to CENSORED.'
+
+Sometimes you may need to use the matched text itself as part of the substitution. 
+In the first argument to sub(), you can type \1, \2, \3, and so on, to mean “Enter the text of group 1, 2, 3, and so on, in the substitution.”
+
+For example, say you want to censor the names of the secret agents by showing just the first letters of their names. To do this, 
+you could use the regex Agent (\w)\w* and pass r'\1****' as the first argument to sub(). 
+The \1 in that string will be replaced by whatever text was matched by group 1—that is, the (\w) group of the regular expression.
+
+>>> agentNamesRegex = re.compile(r'Agent (\w)\w*')
+>>> agentNamesRegex.sub(r'\1****', 'Agent Alice told Agent Carol that Agent
+Eve knew Agent Bob was a double agent.')
+A**** told C**** that E**** knew B**** was a double agent.'
+
+
+
+Managing Complex Regexes
+Regular expressions are fine if the text pattern you need to match is simple. But matching complicated text patterns might require long, 
+convoluted regular expressions. You can mitigate this by telling the re.compile() function 
+to ignore whitespace and comments inside the regular expression string. This “verbose mode” can be enabled by passing the variable re.VERBOSE 
+as the second argument to re.compile().
+
+Now instead of a hard-to-read regular expression like this:
+
+phoneRegex = re.compile(r'((\d{3}|\(\d{3}\))?(\s|-|\.)?\d{3}(\s|-|\.)\d{4}
+(\s*(ext|x|ext.)\s*\d{2,5})?)')
+
+you can spread the regular expression over multiple lines with comments like this:
+
+phoneRegex = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?            # area code
+    (\s|-|\.)?                    # separator
+    \d{3}                         # first 3 digits
+    (\s|-|\.)                     # separator
+    \d{4}                         # last 4 digits
+    (\s*(ext|x|ext.)\s*\d{2,5})?  # extension
+    )''', re.VERBOSE)
+
+Note how the previous example uses the triple-quote syntax (''') to create a multiline string so that you can spread the regular expression definition over many lines, making it much more legible.
+
+The comment rules inside the regular expression string are the same as regular Python code: the # symbol and everything after it to the end of the line are ignored. 
+Also, the extra spaces inside the multiline string for the regular expression are not considered part of the text pattern to be matched. 
+This lets you organize the regular expression so it’s easier to read.
+
+
+
+Combining re.IGNORECASE, re.DOTALL, and re.VERBOSE
+What if you want to use re.VERBOSE to write comments in your regular expression but also want to use re.IGNORECASE to ignore capitalization? 
+Unfortunately, the re.compile() function takes only a single value as its second argument. 
+You can get around this limitation by combining the re.IGNORECASE, re.DOTALL, and re.VERBOSE variables using the pipe character (|), 
+which in this context is known as the bitwise or operator.
+
+So if you want a regular expression that’s case-insensitive and includes newlines to match the dot character, 
+you would form your re.compile() call like this:
+
+>>> someRegexValue = re.compile('foo', re.IGNORECASE | re.DOTALL)
+
+Including all three options in the second argument will look like this:
+
+>>> someRegexValue = re.compile('foo', re.IGNORECASE | re.DOTALL | re.VERBOSE)
+
+This syntax is a little old-fashioned and originates from early versions of Python. 
+The details of the bitwise operators are beyond the scope of this book, but check out the resources at https://nostarch.com/automatestuff2/ 
+for more information. You can also pass other options for the second argument; they’re uncommon, 
+but you can read more about them in the resources, too.
