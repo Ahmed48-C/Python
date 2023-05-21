@@ -1,0 +1,22 @@
+1. What is the function that creates Regex objects?
+Answer: re.compile
+
+2. Why are raw strings often used when creating Regex objects?
+Answer: because they allow us to specify regular expressions without having to escape backslashes
+
+3. What does the search() method return?
+Answer: returns a match object if it finds a match anywhere in the string. If no match is found, it returns None
+
+4. How do you get the actual strings that match the pattern from a Match object?
+Answer: you can get the match object by printing match.group
+
+5. In the regex created from r'(\d\d\d)-(\d\d\d-\d\d\d\d)', what does group 0 cover? Group 1? Group 2?
+Answer: group 0 returns all the groups, group 1 returns the first three digits, group 2 returns the rest of the digits after the first 3
+
+6. Parentheses and periods have specific meanings in regular expression syntax. How would you specify that you want a regex to match actual parentheses and period characters?
+Answer: if you want to write an actual parentheses and periods you need to escape them with a backslash like this \.
+
+7. The findall() method returns a list of strings or a list of tuples of strings. What makes it return one or the other?
+Answer: it returns a list of strings if
+
+

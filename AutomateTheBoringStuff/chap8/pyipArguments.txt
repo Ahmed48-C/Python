@@ -1,0 +1,137 @@
+The min, max, greaterThan, and lessThan Keyword Arguments
+The inputNum(), inputInt(), and inputFloat() functions, which accept int and float numbers, also have min, max, greaterThan, and lessThan keyword 
+arguments for specifying a range of valid values. For example, enter the following into the interactive shell:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputNum('Enter num: ', min=4)
+Enter num:3
+Input must be at minimum 4.
+Enter num:4
+>>> response
+4
+>>> response = pyip.inputNum('Enter num: ', greaterThan=4)
+Enter num: 4
+Input must be greater than 4.
+Enter num: 5
+>>> response
+5
+>>> response = pyip.inputNum('>', min=4, lessThan=6)
+Enter num: 6
+Input must be less than 6.
+Enter num: 3
+Input must be at minimum 4.
+Enter num: 4
+>>> response
+4
+
+These keyword arguments are optional, but if supplied, the input cannot be less than the min argument or greater than the max argument (though the input can be equal to them). 
+Also, the input must be greater than the greaterThan and less than the lessThan arguments (that is, the input cannot be equal to them).
+
+
+
+The blank Keyword Argument
+By default, blank input isn’t allowed unless the blank keyword argument is set to True:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputNum('Enter num: ')
+Enter num:(blank input entered here)
+Blank values are not allowed.
+Enter num: 42
+>>> response
+42
+>>> response = pyip.inputNum(blank=True)
+(blank input entered here)
+>>> response
+''
+
+Use blank=True if you’d like to make input optional so that the user doesn’t need to enter anything.
+
+
+
+The limit, timeout, and default Keyword Arguments 
+Pass an integer for the limit keyword argument to determine how many attempts a PyInputPlus function will make to receive valid input before giving up, 
+and pass an integer for the timeout keyword argument to determine how many seconds the user has to enter valid input before the PyInputPlus function gives up.
+
+If the user fails to enter valid input, these keyword arguments will cause the function to raise a RetryLimitException or TimeoutException, respectively. 
+For example, enter the following into the interactive shell:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputNum(limit=2)
+blah
+'blah' is not a number.
+Enter num: number
+'number' is not a number.
+Traceback (most recent call last):
+    --snip--
+pyinputplus.RetryLimitException
+>>> response = pyip.inputNum(timeout=10)
+42 (entered after 10 seconds of waiting)
+Traceback (most recent call last):
+    --snip--
+pyinputplus.TimeoutException
+
+When you use these keyword arguments and also pass a default keyword argument, the function returns the default value instead of raising an exception. 
+Enter the following into the interactive shell:
+
+>>> response = pyip.inputNum(limit=2, default='N/A')
+hello
+'hello' is not a number.
+world
+'world' is not a number.
+>>> response
+'N/A'
+
+Instead of raising RetryLimitException, the inputNum() function simply returns the string 'N/A'.
+
+
+
+The allowRegexes and blockRegexes Keyword Arguments
+You can also use regular expressions to specify whether an input is allowed or not. 
+The allowRegexes and blockRegexes keyword arguments take a list of regular expression strings to determine what the PyInputPlus function will accept or reject 
+as valid input. For example, enter the following code into the interactive shell so that inputNum()
+will accept Roman numerals in addition to the usual numbers:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputNum(allowRegexes=[r'(I|V|X|L|C|D|M)+', r'zero'])
+XLII
+>>> response
+'XLII'
+>>> response = pyip.inputNum(allowRegexes=[r'(i|v|x|l|c|d|m)+', r'zero'])
+xlii
+>>> response
+'xlii'
+
+Of course, this regex affects only what letters the inputNum() function will accept from the user; 
+the function will still accept Roman numerals with invalid ordering such as 'XVX' or 'MILLI' because the r'(I|V|X|L|C|D|M)+' 
+regular expression accepts those strings.
+
+You can also specify a list of regular expression strings that a PyInputPlus function won’t accept by using the blockRegexes keyword argument. 
+Enter the following into the interactive shell so that inputNum() won’t accept even numbers:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputNum(blockRegexes=[r'[02468]$'])
+42
+This response is invalid.
+44
+This response is invalid.
+43
+>>> response
+43
+
+If you specify both an allowRegexes and blockRegexes argument, the allow list overrides the block list. For example, 
+enter the following into the interactive shell, which allows 'caterpillar' and 'category' but blocks anything else that has the word 'cat' in it:
+
+>>> import pyinputplus as pyip
+>>> response = pyip.inputStr(allowRegexes=[r'caterpillar', 'category'],
+blockRegexes=[r'cat'])
+cat
+This response is invalid.
+catastrophe
+This response is invalid.
+category
+>>> response
+'category'
+
+The PyInputPlus module’s functions can save you from writing tedious input validation code yourself. 
+But there’s more to the PyInputPlus module than what has been detailed here. 
+You can examine its full documentation online at https://pyinputplus.readthedocs.io/.
