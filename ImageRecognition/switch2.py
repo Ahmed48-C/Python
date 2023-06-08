@@ -15,6 +15,8 @@ def click(x,y):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0) # this holds the left click in the mouse
     time.sleep(0.005)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0) # this release the left click in the mouse
+    
+
 
 # obstacles Y:  431
 
@@ -30,6 +32,9 @@ while keyboard.is_pressed('q') == False:
     if   pyautogui.pixel(594, 431)[0] == 0 and pyautogui.pixel(597, 515)[0] == 0: # this if statement first checks if the obstacle is in a specific pixel in the right side and the ball is on the right side
         click(597, 515) # if so then this click function runs
         print("detected right side")
+
+
+
 
 # while keyboard.is_pressed('q') == False:
 #     #left side

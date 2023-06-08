@@ -1,0 +1,6 @@
+mss==6.1.0
+numpy==1.21.3
+opencv-python==4.5.4.58
+PyDirectInput==1.0.4
+pynput==1.7.4
+six==1.16.0

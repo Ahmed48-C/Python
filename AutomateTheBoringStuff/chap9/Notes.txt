@@ -1,0 +1,294 @@
+Files and File Paths
+A file has two key properties: a filename (usually written as one word) and a path. The path specifies the location of a file on the computer. For example, 
+there is a file on my Windows laptop with the filename project.docx in the path C:\Users\Al\Documents. 
+The part of the filename after the last period is called the file’s extension and tells you a file’s type. 
+The filename project.docx is a Word document, and Users, Al, and Documents all refer to folders (also called directories). 
+Folders can contain files and other folders. For example, project.docx is in the Documents folder, which is inside the Al folder, 
+which is inside the Users folder.
+
+###Figure 9-1 is under images folder
+
+Figure 9-1 shows this folder organization.
+
+Figure 9-1: A file in a hierarchy of folders
+
+The C:\ part of the path is the root folder, which contains all other folders. On Windows, the root folder is named C:\ and is also called the C: drive. On macOS and Linux, the root folder is /. In this book, I’ll use the Windows-style root folder, C:\. If you are entering the interactive shell examples on macOS or Linux, enter / instead.
+
+Additional volumes, such as a DVD drive or USB flash drive, will appear differently on different operating systems. On Windows, they appear as new, lettered root drives, such as D:\ or E:\. On macOS, they appear as new folders under the /Volumes folder. On Linux, they appear as new folders under the /mnt (“mount”) folder. Also note that while folder names and filenames are not case-sensitive on Windows and macOS, they are case-sensitive on Linux.
+
+
+Backslash on Windows and Forward Slash on macOS and Linux
+On Windows, paths are written using backslashes (\) as the separator between folder names. The macOS and Linux operating systems, however, 
+use the forward slash (/) as their path separator. If you want your programs to work on all operating systems, 
+you will have to write your Python scripts to handle both cases.
+
+Fortunately, this is simple to do with the Path() function in the pathlib module. If you pass it the string values of individual file and folder names in your path, 
+Path() will return a string with a file path using the correct path separators. Enter the following into the interactive shell:
+
+>>> from pathlib import Path
+>>> Path('spam', 'bacon', 'eggs')
+
+WindowsPath('spam/bacon/eggs')
+>>> str(Path('spam', 'bacon', 'eggs'))
+'spam\\bacon\\eggs'
+
+Note that the convention for importing pathlib is to run from pathlib import Path, 
+since otherwise we’d have to enter pathlib.Path everywhere Path shows up in our code. Not only is this extra typing redundant, but it’s also redundant.
+
+I’m running this chapter’s interactive shell examples on Windows, so Path('spam', 'bacon', 'eggs') returned a WindowsPath object for the joined path, 
+represented as WindowsPath('spam/bacon/eggs'). Even though Windows uses backslashes, 
+the WindowsPath representation in the interactive shell displays them using forward slashes, 
+since open source software developers have historically favored the Linux operating system.
+
+If you want to get a simple text string of this path, you can pass it to the str() function, which in our example returns 'spam\\bacon\\eggs'. 
+(Notice that the backslashes are doubled because each backslash needs to be escaped by another backslash character.) If I had called this function on, say, Linux, 
+Path() would have returned a PosixPath object that, when passed to str(), would have returned 'spam/bacon/eggs'. 
+(POSIX is a set of standards for Unix-like operating systems such as Linux.)
+
+These Path objects (really, WindowsPath or PosixPath objects, depending on your operating system) 
+will be passed to several of the file-related functions introduced in this chapter. For example, 
+the following code joins names from a list of filenames to the end of a folder’s name:
+
+>>> from pathlib import Path
+>>> myFiles = ['accounts.txt', 'details.csv', 'invite.docx']
+>>> for filename in myFiles:
+        print(Path(r'C:\Users\Al', filename))
+C:\Users\Al\accounts.txt
+C:\Users\Al\details.csv
+C:\Users\Al\invite.docx
+
+On Windows, the backslash separates directories, so you can’t use it in filenames. However, 
+you can use backslashes in filenames on macOS and Linux. So while Path(r'spam\eggs') refers to two separate folders (or a file eggs in a folder spam) on Windows, 
+the same command would refer to a single folder (or file) named spam\eggs on macOS and Linux. For this reason, 
+it’s usually a good idea to always use forward slashes in your Python code (and I’ll be doing so for the rest of this chapter). 
+The pathlib module will ensure that it always works on all operating systems.
+
+
+
+Using the / Operator to Join Paths
+We normally use the + operator to add two integer or floating-point numbers, such as in the expression 2 + 2, which evaluates to the integer value 4. 
+But we can also use the + operator to concatenate two string values, like the expression 'Hello' + 'World', which evaluates to the string value 'HelloWorld'. 
+Similarly, the / operator that we normally use for division can also combine Path objects and strings. 
+This is helpful for modifying a Path object after you’ve already created it with the Path() function.
+
+For example, enter the following into the interactive shell:
+
+>>> from pathlib import Path
+>>> Path('spam') / 'bacon' / 'eggs'
+WindowsPath('spam/bacon/eggs')
+>>> Path('spam') / Path('bacon/eggs')
+WindowsPath('spam/bacon/eggs')
+>>> Path('spam') / Path('bacon', 'eggs')
+WindowsPath('spam/bacon/eggs')
+
+Using the / operator with Path objects makes joining paths just as easy as string concatenation. It’s also safer than using string concatenation or the join() method, 
+like we do in this example:
+
+>>> homeFolder = r'C:\Users\Al'
+>>> subFolder = 'spam'
+>>> homeFolder + '\\' + subFolder
+'C:\\Users\\Al\\spam'
+>>> '\\'.join([homeFolder, subFolder])
+'C:\\Users\\Al\\spam'
+
+A script that uses this code isn’t safe, because its backslashes would only work on Windows. You could add an if statement that checks sys.platform 
+(which contains a string describing the computer’s operating system) to decide what kind of slash to use, 
+but applying this custom code everywhere it’s needed can be inconsistent and bug-prone.
+
+The pathlib module solves these problems by reusing the / math division operator to join paths correctly, 
+no matter what operating system your code is running on. The following example uses this strategy to join the same paths as in the previous example:
+
+>>> homeFolder = Path('C:/Users/Al')
+>>> subFolder = Path('spam')
+>>> homeFolder / subFolder
+WindowsPath('C:/Users/Al/spam')
+>>> str(homeFolder / subFolder)
+'C:\\Users\\Al\\spam'
+
+The only thing you need to keep in mind when using the / operator for joining paths is that one of the first two values must be a Path object. 
+Python will give you an error if you try entering the following into the interactive shell:
+
+>>> 'spam' / 'bacon' / 'eggs'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+Python evaluates the / operator from left to right and evaluates to a Path object, 
+so either the first or second leftmost value must be a Path object for the entire expression to evaluate to a Path object.
+
+If you see the TypeError: unsupported operand type(s) for /: 'str' and 'str' error message shown previously, you need to put a Path object on the left side of the expression.
+
+The / operator replaces the older os.path.join() function, which you can learn more about from https://docs.python.org/3/library/os.path.html#os.path.join.
+
+
+
+The Current Working Directory
+Every program that runs on your computer has a current working directory, or cwd. 
+Any filenames or paths that do not begin with the root folder are assumed to be under the current working directory.
+
+You can get the current working directory as a string value with the Path.cwd() function and change it using os.chdir(). Enter the following into the interactive shell:
+
+>>> from pathlib import Path
+>>> import os
+>>> Path.cwd()
+WindowsPath('C:/Users/Al/AppData/Local/Programs/Python/Python37')'
+>>> os.chdir('C:\\Windows\\System32')
+>>> Path.cwd()
+WindowsPath('C:/Windows/System32')
+
+Here, the current working directory is set to C:\Users\Al\AppData\Local\Programs\Python\Python37, so the filename project.docx refers to C:\Users\Al\AppData\Local\Programs\Python\Python37\project.docx. When we change the current working directory to C:\Windows\System32, the filename project.docx is interpreted as C:\Windows\System32\project.docx.
+
+Python will display an error if you try to change to a directory that does not exist.
+
+>>> os.chdir('C:/ThisFolderDoesNotExist')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+FileNotFoundError: [WinError 2] The system cannot find the file specified:
+'C:/ThisFolderDoesNotExist'
+
+There is no pathlib function for changing the working directory, because changing the current working directory while a program is running can often lead to subtle bugs.
+
+The os.getcwd() function is the older way of getting the current working directory as a string.
+
+
+
+The Home Directory
+All users have a folder for their own files on the computer called the home directory or home folder. 
+You can get a Path object of the home folder by calling Path.home():
+
+>>> Path.home()
+WindowsPath('C:/Users/Al')
+
+The home directories are located in a set place depending on your operating system:
+
+On Windows, home directories are under C:\Users.
+On Mac, home directories are under /Users.
+On Linux, home directories are often under /home.
+Your scripts will almost certainly have permissions to read and write the files under your home directory, 
+so it’s an ideal place to put the files that your Python programs will work with.
+
+
+
+Creating New Folders Using the os.makedirs() Function
+Your programs can create new folders (directories) with the os.makedirs() function. Enter the following into the interactive shell:
+
+>>> import os
+>>> os.makedirs('C:\\delicious\\walnut\\waffles')
+
+This will create not just the C:\delicious folder but also a walnut folder inside C:\delicious and a waffles folder inside C:\delicious\walnut. 
+That is, os.makedirs() will create any necessary intermediate folders in order to ensure that the full path exists. 
+
+###Figure 9-3 us under images folder
+
+Figure 9-3 shows this hierarchy of folders.
+
+Figure 9-3: The result of os.makedirs('C:\\delicious\\walnut\\waffles')
+
+To make a directory from a Path object, call the mkdir() method. For example, this code will create a spam folder under the home folder on my computer:
+
+>>> from pathlib import Path
+>>> Path(r'C:\Users\Al\spam').mkdir()
+
+Note that mkdir() can only make one directory at a time; it won’t make several subdirectories at once like os.makedirs().
+
+
+
+Given a Path object, you can extract the file path’s different parts as strings using several Path object attributes. 
+These can be useful for constructing new file paths based on existing ones. The attributes are diagrammed in Figure 9-4.
+
+###Figure 9-4 in images folder
+
+Figure 9-4: The parts of a Windows (top) and macOS/Linux (bottom) file path
+
+The parts of a file path include the following:
+
+The anchor, which is the root folder of the filesystem
+On Windows, the drive, which is the single letter that often denotes a physical hard drive or other storage device
+The parent, which is the folder that contains the file
+The name of the file, made up of the stem (or base name) and the suffix (or extension)
+Note that Windows Path objects have a drive attribute, but macOS and Linux Path objects don’t. The drive attribute doesn’t include the first backslash.
+
+To extract each attribute from the file path, enter the following into the interactive shell:
+
+>>> p = Path('C:/Users/Al/spam.txt')
+>>> p.anchor
+'C:\\'
+>>> p.parent # This is a Path object, not a string.
+WindowsPath('C:/Users/Al')
+>>> p.name
+'spam.txt'
+>>> p.stem
+'spam'
+>>> p.suffix
+'.txt'
+>>> p.drive
+'C:'
+
+These attributes evaluate to simple string values, except for parent, which evaluates to another Path object.
+
+The parents attribute (which is different from the parent attribute) evaluates to the ancestor folders of a Path object with an integer index:
+
+>>> Path.cwd()
+WindowsPath('C:/Users/Al/AppData/Local/Programs/Python/Python37')
+>>> Path.cwd().parents[0]
+WindowsPath('C:/Users/Al/AppData/Local/Programs/Python')
+>>> Path.cwd().parents[1]
+WindowsPath('C:/Users/Al/AppData/Local/Programs')
+>>> Path.cwd().parents[2]
+WindowsPath('C:/Users/Al/AppData/Local')
+>>> Path.cwd().parents[3]
+WindowsPath('C:/Users/Al/AppData')
+>>> Path.cwd().parents[4]
+WindowsPath('C:/Users/Al')
+>>> Path.cwd().parents[5]
+WindowsPath('C:/Users')
+>>> Path.cwd().parents[6]
+WindowsPath('C:/')
+
+The older os.path module also has similar functions for getting the different parts of a path written in a string value. 
+Calling os.path.dirname(path) will return a string of everything that comes before the last slash in the path argument. 
+Calling os.path.basename(path) will return a string of everything that comes after the last slash in the path argument. The directory (or dir) name and base name of a path are outlined in Figure 9-5.
+
+###Figure 9-5 in images folder
+
+Figure 9-5: The base name follows the last slash in a path and is the same as the filename. The dir name is everything before the last slash.
+
+For example, enter the following into the interactive shell:
+
+>>> calcFilePath = 'C:\\Windows\\System32\\calc.exe'
+>>> os.path.basename(calcFilePath)
+'calc.exe'
+>>> os.path.dirname(calcFilePath)
+'C:\\Windows\\System32'
+
+If you need a path’s dir name and base name together, you can just call os.path.split() to get a tuple value with these two strings, like so:
+
+>>> calcFilePath = 'C:\\Windows\\System32\\calc.exe'
+>>> os.path.split(calcFilePath)
+('C:\\Windows\\System32', 'calc.exe')
+
+Notice that you could create the same tuple by calling os.path.dirname() and os.path.basename() and placing their return values in a tuple:
+
+>>> (os.path.dirname(calcFilePath), os.path.basename(calcFilePath))
+('C:\\Windows\\System32', 'calc.exe')
+
+But os.path.split() is a nice shortcut if you need both values.
+
+Also, note that os.path.split() does not take a file path and return a list of strings of each folder. For that, 
+use the split() string method and split on the string in os.sep. (Note that sep is in os, not os.path.) 
+The os.sep variable is set to the correct folder-separating slash for the computer running the program, '\\' on Windows and '/' on macOS and Linux, 
+and splitting on it will return a list of the individual folders.
+
+For example, enter the following into the interactive shell:
+
+>>> calcFilePath.split(os.sep)
+['C:', 'Windows', 'System32', 'calc.exe']
+
+This returns all the parts of the path as strings.
+
+On macOS and Linux systems, the returned list of folders will begin with a blank string, like this:
+
+>>> '/usr/bin'.split(os. sep)
+['', 'usr', 'bin']
+
+The split() string method will work to return a list of each part of the path.

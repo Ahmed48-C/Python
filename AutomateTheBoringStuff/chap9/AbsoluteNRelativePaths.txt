@@ -1,0 +1,77 @@
+Absolute vs. Relative Paths
+There are two ways to specify a file path:
+
+An absolute path, which always begins with the root folder
+A relative path, which is relative to the program’s current working directory
+There are also the dot (.) and dot-dot (..) folders. These are not real folders but special names that can be used in a path. 
+A single period (“dot”) for a folder name is shorthand for “this directory.” Two periods (“dot-dot”) means “the parent folder.”
+
+###Figure 9-2 is  under images folder
+
+Figure 9-2 is an example of some folders and files. When the current working directory is set to C:\bacon, the relative paths for the other folders and files are set as they are in the figure.
+
+Figure 9-2: The relative paths for folders and files in the working directory C:\bacon
+
+The .\ at the start of a relative path is optional. For example, .\spam.txt and spam.txt refer to the same file.
+
+
+
+Handling Absolute and Relative Paths
+The pathlib module provides methods for checking whether a given path is an absolute path and returning the absolute path of a relative path.
+
+Calling the is_absolute() method on a Path object will return True if it represents an absolute path or False if it represents a relative path. For example, 
+enter the following into the interactive shell, using your own files and folders instead of the exact ones listed here:
+
+>>> Path.cwd()
+WindowsPath('C:/Users/Al/AppData/Local/Programs/Python/Python37')
+>>> Path.cwd().is_absolute()
+True
+>>> Path('spam/bacon/eggs').is_absolute()
+False
+
+To get an absolute path from a relative path, you can put Path.cwd() / in front of the relative Path object. 
+After all, when we say “relative path,” we almost always mean a path that is relative to the current working directory. Enter the following into the interactive shell:
+
+>>> Path('my/relative/path')
+WindowsPath('my/relative/path')
+>>> Path.cwd() / Path('my/relative/path')
+WindowsPath('C:/Users/Al/AppData/Local/Programs/Python/Python37/my/relative/
+path')
+
+If your relative path is relative to another path besides the current working directory, 
+just replace Path.cwd() with that other path instead. The following example gets an absolute path using the home directory instead of the current working directory:
+
+>>> Path('my/relative/path')
+WindowsPath('my/relative/path')
+>>> Path.home() / Path('my/relative/path')
+WindowsPath('C:/Users/Al/my/relative/path')
+
+The os.path module also has some useful functions related to absolute and relative paths:
+
+Calling os.path.abspath(path) will return a string of the absolute path of the argument. This is an easy way to convert a relative path into an absolute one.
+Calling os.path.isabs(path) will return True if the argument is an absolute path and False if it is a relative path.
+Calling os.path.relpath(path, start) will return a string of a relative path from the start path to path. If start is not provided, the current working directory is used as the start path.
+Try these functions in the interactive shell:
+
+>>> os.path.abspath('.')
+
+'C:\\Users\\Al\\AppData\\Local\\Programs\\Python\\Python37'
+>>> os.path.abspath('.\\Scripts')
+'C:\\Users\\Al\\AppData\\Local\\Programs\\Python\\Python37\\Scripts'
+>>> os.path.isabs('.')
+False
+>>> os.path.isabs(os.path.abspath('.'))
+True
+
+Since C:\Users\Al\AppData\Local\Programs\Python\Python37 was the working directory when os.path.abspath() was called, 
+the “single-dot” folder represents the absolute path 'C:\\Users\\Al\\AppData\\Local\\Programs\\Python\\Python37'.
+
+Enter the following calls to os.path.relpath() into the interactive shell:
+
+>>> os.path.relpath('C:\\Windows', 'C:\\')
+'Windows'
+>>> os.path.relpath('C:\\Windows', 'C:\\spam\\eggs')
+'..\\..\\Windows'
+
+When the relative path is within the same parent folder as the path, but is within subfolders of a different path, 
+such as 'C:\\Windows' and 'C:\\spam\\eggs', you can use the “dot-dot” notation to return to the parent folder.
